@@ -1,0 +1,17 @@
+management:
+  endpoints:
+    web:
+      path-mapping:
+        info: version
+      exposure:
+        include: health,info
+      base-path: /
+info:
+  version: 0.0.1
+
+aws:
+  region: sa-east-1
+  access-key: AKIAUIODFCI2NG6SLUM4
+  secret-access-key: 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
+  dynamodb:
+    endpoint: dynamodb.sa-east-1.amazonaws.com

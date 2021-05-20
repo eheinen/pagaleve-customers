@@ -1,0 +1,81 @@
+service: 'customer-api'
+
+frameworkVersion: "2"
+
+provider:
+  name: aws
+  stage: qa
+  runtime: nodejs14.x
+  region: sa-east-1
+  apiGateway:
+    minimumCompressionSize: 1024
+    shouldStartNameWithService: true
+  environment:
+    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+
+functions:
+  create:
+    handler: customers/create.create
+    events:
+      - http:
+          path: customers
+          method: post
+          cors: true
+
+  list:
+    handler: customers/list.list
+    events:
+      - http:
+          path: customers
+          method: get
+          cors: true
+
+  get:
+    handler: customers/get.get
+    events:
+      - http:
+          path: customers/{id}
+          method: get
+          cors: true
+
+  update:
+    handler: customers/update.update
+    events:
+      - http:
+          path: customers/{id}
+          method: put
+          cors: true
+          
+  delete:
+    handler: customers/delete.delete
+    events:
+      - http:
+          path: customers/{id}
+          method: delete
+          cors: true
+resources:
+  Resources:
+    CustomerDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: cpf
+            AttributeType: S
+        KeySchema:
+          - AttributeName: cpf
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}

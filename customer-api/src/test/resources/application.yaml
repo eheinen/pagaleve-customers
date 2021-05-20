@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    active:
+      - e2e
+
+aws:
+  region: sa-east-1
+  access-key: 123
+  secret-access-key: 123
+  dynamodb:
+    endpoint: http://localhost:8000/

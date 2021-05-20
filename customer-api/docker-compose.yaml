@@ -1,0 +1,9 @@
+version: '3.7'
+
+services:
+  app:
+    image: customer-api:latest
+    container_name: pagaleve-customer-api
+    restart: always
+    ports:
+      - 8080:8080

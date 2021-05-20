@@ -1,0 +1,408 @@
+openapi: 3.0.1
+info:
+  title: PagaLeve Customer API
+  description: 'This API is designed to reflect the endpoints exposed on PagaLeve for Customer REST API'
+  version: 1.0.0
+servers:
+  - url: https://pagaleve.com.br/api/1
+tags:
+  - name: Customers
+paths:
+  /customers:
+    get:
+      tags:
+        - Customer
+      summary: Paginated list of customers.
+      parameters:
+        - name: limit
+          in: query
+          description: The limit of data to return from database
+          required: true
+          schema:
+            type: string
+        - name: lastCpf
+          in: query
+          description: The last CPF returned in the page before
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: The list of customer.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomerResponse'
+        404:
+          description: The customer was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+              example:
+                code: 404,
+                type: 'Not Found'
+                message: 'The customer was not found.'
+        500:
+          description: Internal server error happened.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+              example:
+                code: 500,
+                type: 'Internal Server Error'
+                message: 'Could not execute the action.'
+        502:
+          description: External service error happened.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+              example:
+                code: 502,
+                type: 'Bad Gateway'
+                message: 'Could not execute the action. External services are nto working properly.'
+
+    post:
+      tags:
+        - Customer
+      summary: Create a new customer.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerRequest'
+            example:
+              cpf: "000.000.000-00"
+              email: "test@email.com"
+              name: "Eduardo Heinen"
+              phoneNumber: "+5511000000000"
+              birthdate: "01/01/1990"
+              profession: "Software Engineer"
+              salary: "12345.67"
+              country: "Brazil"
+              state: "SP"
+              city: "São Paulo"
+              zipcode: "00000-000"
+              street: "Rua Paim"
+              number: "123"
+              complement: "Apartment 123"
+        required: true
+      responses:
+        201:
+          description: The customer was created sucessfully.
+          content: { }
+        400:
+          description: Invalid fields or invalid CPF.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+              example:
+                code: 400,
+                type: 'Bad Request'
+                message: 'The CPF is invalid.'
+        409:
+          description: CPF Already registered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+              example:
+                code: 409,
+                type: 'Conflict'
+                message: 'The CPF provided is already registered.'
+        500:
+          description: Internal server error happened.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+              example:
+                code: 500,
+                type: 'Internal Server Error'
+                message: 'Could not execute the action.'
+        502:
+          description: External service error happened.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+              example:
+                code: 502,
+                type: 'Bad Gateway'
+                message: 'Could not execute the action. External services are nto working properly.'
+
+  /customers/{cpf}:
+    get:
+      tags:
+        - Customer
+      summary: Get a customer.
+      parameters:
+        - name: cpf
+          in: path
+          description: The customer CPF
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: The customer.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+        404:
+          description: The customer was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+              example:
+                code: 404,
+                type: 'Not Found'
+                message: 'The customer was not found.'
+        500:
+          description: Internal server error happened.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+              example:
+                code: 500,
+                type: 'Internal Server Error'
+                message: 'Could not execute the action.'
+        502:
+          description: External service error happened.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+              example:
+                code: 502,
+                type: 'Bad Gateway'
+                message: 'Could not execute the action. External services are nto working properly.'
+
+
+    put:
+      tags:
+        - Customer
+      summary: Create a new customer.
+      parameters:
+        - name: cpf
+          in: path
+          description: The customer CPF
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerRequest'
+            example:
+              cpf: "000.000.000-00"
+              email: "test@email.com"
+              name: "Eduardo Heinen"
+              phoneNumber: "+5511000000000"
+              birthdate: "01/01/1990"
+              profession: "Software Engineer"
+              salary: "12345.67"
+              country: "Brazil"
+              state: "SP"
+              city: "São Paulo"
+              zipcode: "00000-000"
+              street: "Rua Paim"
+              number: "123"
+              complement: "Apartment 123"
+        required: true
+      responses:
+        200:
+          description: The customer was updated sucessfully.
+          content: { }
+        404:
+          description: The customer was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+              example:
+                code: 404,
+                type: 'Not Found'
+                message: 'The customer was not found.'
+        500:
+          description: Internal server error happened.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+              example:
+                code: 500,
+                type: 'Internal Server Error'
+                message: 'Could not execute the action.'
+        502:
+          description: External service error happened.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+              example:
+                code: 502,
+                type: 'Bad Gateway'
+                message: 'Could not execute the action. External services are nto working properly.'
+
+    delete:
+      tags:
+        - Customer
+      summary: Delete a customer.
+      parameters:
+        - name: cpf
+          in: path
+          description: The customer CPF
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: The customer was deleted sucessfully.
+          content: { }
+        404:
+          description: The customer was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+              example:
+                code: 404,
+                type: 'Not Found'
+                message: 'The customer was not found.'
+        500:
+          description: Internal server error happened.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+              example:
+                code: 500,
+                type: 'Internal Server Error'
+                message: 'Could not execute the action.'
+        502:
+          description: External service error happened.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+              example:
+                code: 502,
+                type: 'Bad Gateway'
+                message: 'Could not execute the action. External services are nto working properly.'
+
+
+components:
+  schemas:
+    CustomerRequest:
+      type: object
+      properties:
+        cpf:
+          type: string
+          nullable: false
+        email:
+          type: string
+          nullable: false
+        name:
+          type: string
+          nullable: false
+        phoneNumber:
+          type: string
+          nullable: false
+        birthdate:
+          type: string
+          nullable: false
+        profession:
+          type: string
+          nullable: false
+        salary:
+          type: string
+          nullable: false
+        country:
+          type: string
+          nullable: false
+        state:
+          type: string
+          nullable: false
+        city:
+          type: string
+          nullable: false
+        zipcode:
+          type: string
+          nullable: false
+        street:
+          type: string
+          nullable: false
+        number:
+          type: string
+          nullable: false
+        complement:
+          type: string
+          nullable: false
+    CustomerResponse:
+      type: object
+      properties:
+        cpf:
+          type: string
+          nullable: false
+        email:
+          type: string
+          nullable: false
+        name:
+          type: string
+          nullable: false
+        phoneNumber:
+          type: string
+          nullable: false
+        birthdate:
+          type: string
+          nullable: false
+        profession:
+          type: string
+          nullable: false
+        salary:
+          type: string
+          nullable: false
+        country:
+          type: string
+          nullable: false
+        state:
+          type: string
+          nullable: false
+        city:
+          type: string
+          nullable: false
+        zipcode:
+          type: string
+          nullable: false
+        street:
+          type: string
+          nullable: false
+        number:
+          type: string
+          nullable: false
+        complement:
+          type: string
+          nullable: false
+        createdAt:
+          type: string
+          nullable: false
+    ApiErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
