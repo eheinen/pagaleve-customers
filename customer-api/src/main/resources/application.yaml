@@ -11,7 +11,7 @@ info:
 
 aws:
   region: sa-east-1
-  access-key: AKIAUIODFCI2NG6SLUM4
-  secret-access-key: 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
+  access-key: KEY
+  secret-access-key: SECRET
   dynamodb:
     endpoint: dynamodb.sa-east-1.amazonaws.com
